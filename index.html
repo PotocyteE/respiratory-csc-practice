@@ -202,7 +202,7 @@
       <div class="card">
         <p class="section-title">Posterior vs anterior — what changes</p>
         <p>The sample form uses almost the same Palpation / Percussion / Auscultation wording for both sides. Inspection is different.</p>
-        <p><strong>Posterior inspection extra / specific:</strong> spinous processes in a straight line; elliptical thorax with ribs sloping ~45° to the spine; scapulae symmetric in each hemithorax.</p>
+        <p><strong>Posterior inspection extra / specific:</strong> spinous processes in a straight line; thorax symmetric in an elliptical shape; scapulae symmetric in each hemithorax.</p>
         <p><strong>Anterior inspection extra / specific:</strong> normal elliptical chest wall; ribs sloping downward with symmetric interspaces; costal angle within 90°; relaxed facial expression without nasal flaring.</p>
         <p><strong>Shared inspection:</strong> skin colour consistent with genetic background; nails normal configuration; RR 14/min regular even; relaxed respiration without accessory muscle; no audible breathing sound.</p>
       </div>
@@ -212,7 +212,6 @@
         <div class="keys">
           <span class="chip">spinous processes straight</span>
           <span class="chip">thorax symmetric elliptical</span>
-          <span class="chip">ribs 45° to spine</span>
           <span class="chip">scapulae symmetric</span>
           <span class="chip">skin colour</span>
           <span class="chip">nails normal</span>
@@ -231,7 +230,7 @@
       <div class="card">
         <p class="section-title">Mini mnemonic</p>
         <p><strong>I-P-P-A</strong> = Inspect → Palpate → Percuss → Auscultate (never skip order).</p>
-        <p><strong>Posterior inspect:</strong> <em>Spine – Shape 45° – Scapulae – Skin – Nails – 14 – Relaxed – Silent</em></p>
+        <p><strong>Posterior inspect:</strong> <em>Spine – Elliptical thorax – Scapulae – Skin – Nails – 14 – Relaxed – Silent</em></p>
         <p><strong>Palpate:</strong> <em>Expand – Fremitus – Skin</em></p>
         <p><strong>Percuss:</strong> <em>Resonance both sides</em></p>
         <p><strong>Auscultate:</strong> <em>Air in – Clear – No extra sounds</em></p>
@@ -247,7 +246,7 @@
     const MODEL = {
       inspection: [
         "Spinous processes appear in a straight line.",
-        "Thorax is symmetric, in an elliptical shape, with downward sloping ribs, about 45 degrees relative to the spine.",
+        "Thorax is symmetric, in an elliptical shape.",
         "Scapulae are placed symmetrically in each hemithorax.",
         "Skin colour is consistent with client’s genetic background.",
         "The nails are of normal configuration.",
@@ -274,7 +273,6 @@
       inspection: [
         ["spinous", "straight"],
         ["thorax", "symmetric", "elliptical"],
-        ["45"],
         ["scapul"],
         ["skin", "colour"],
         ["nail"],
@@ -359,13 +357,13 @@
     });
 
     const CARDS = [
-      { q: "Inspection — spine & thorax shape (posterior)", hint: "3 lines: spine, thorax+ribs angle, scapulae", a: MODEL.inspection.slice(0,3).join("\n") },
+      { q: "Inspection — spine & thorax shape (posterior)", hint: "3 lines: spine, elliptical thorax, scapulae", a: MODEL.inspection.slice(0,3).join("\n") },
       { q: "Inspection — skin, nails, breathing pattern", hint: "5 lines from the sample", a: MODEL.inspection.slice(3).join("\n") },
-      { q: "Write ALL 8 posterior inspection findings", hint: "Spine → shape 45° → scapulae → skin → nails → RR14 → no accessory → silent", a: MODEL.inspection.join("\n") },
+      { q: "Write ALL 8 posterior inspection findings", hint: "Spine → elliptical thorax → scapulae → skin → nails → RR14 → no accessory → silent", a: MODEL.inspection.join("\n") },
       { q: "Palpation — 3 findings", hint: "Expansion, fremitus, skin", a: MODEL.palpation.join("\n") },
       { q: "Percussion — 1 finding", hint: "Resonance", a: MODEL.percussion.join("\n") },
       { q: "Auscultation — 3 findings", hint: "Air entry, clear, no adventitious", a: MODEL.auscultation.join("\n") },
-      { q: "What is different on ANTERIOR inspection?", hint: "Think costal angle and face", a: "Anterior adds: elliptical chest wall; ribs sloping downward with symmetric interspaces; costal angle within 90 degrees; relaxed facial expression without nasal flaring.\nAnterior does NOT use: spinous processes / 45° to spine / scapulae lines." }
+      { q: "What is different on ANTERIOR inspection?", hint: "Think costal angle and face", a: "Anterior adds: elliptical chest wall; ribs sloping downward with symmetric interspaces; costal angle within 90 degrees; relaxed facial expression without nasal flaring.\nAnterior does NOT use: spinous processes / scapulae lines." }
     ];
     let card = 0;
     function renderCard() {
