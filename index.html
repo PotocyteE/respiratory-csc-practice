@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Respiratory CSC — Posterior Chest Practice</title>
+  <style>
+    :root {
+      --ink: #1a2332;
+      --muted: #5b6778;
+      --line: #c9d2de;
+      --paper: #f7f4ee;
+      --card: #fffefb;
+      --accent: #1e4d6b;
+      --ok: #1b6b3a;
+      --warn: #8a5a12;
+      --bad: #8b2e2e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans", "PingFang HK", "Microsoft JhengHei", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    header {
+      background: var(--accent);
+      color: #fff;
+      padding: 18px 20px 16px;
+    }
+    header h1 { margin: 0 0 4px; font-size: 1.25rem; font-weight: 700; }
+    header p { margin: 0; opacity: 0.9; font-size: 0.92rem; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px;
+    }
+    button, .tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+    }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.ghost { background: transparent; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .form-head { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; }
+    label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
+    input[type="text"], textarea {
+      width: 100%;
+      font: inherit;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+    textarea { min-height: 110px; resize: vertical; }
+    .section-title {
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+    }
+    .hint { font-size: 0.86rem; color: var(--muted); margin: 0 0 8px; }
+    .model {
+      display: none;
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: #eef5f1;
+      border-left: 4px solid var(--ok);
+      border-radius: 6px;
+      font-size: 0.92rem;
+      white-space: pre-wrap;
+    }
+    .model.show { display: block; }
+    .score {
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .score.ok { color: var(--ok); }
+    .score.mid { color: var(--warn); }
+    .score.low { color: var(--bad); }
+    .flash {
+      min-height: 160px;
+    }
+    .flash .prompt { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+    .flash .answer { display: none; background: #eef5f1; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+    .flash .answer.show { display: block; }
+    .keys { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .chip {
+      background: #e8eef3;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+    footer { color: var(--muted); font-size: 0.8rem; padding: 8px 0 24px; }
+    @media print {
+      header, .toolbar, .tabs, footer, button { display: none !important; }
+      textarea { border: none; }
+      .card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Assessment of Respiratory System</h1>
+      <p>Clinical Skill Competencies practice — blank form + recall trainer (posterior chest focus)</p>
+    </div>
+  </header>
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab active" data-view="form">Blank form</button>
+      <button class="tab" data-view="flash">Recall trainer</button>
+      <button class="tab" data-view="tips">Memory tips</button>
+    </div>
+
+    <section id="view-form">
+      <div class="toolbar">
+        <button class="primary" id="checkBtn">Check my wording</button>
+        <button id="revealBtn">Show model answers</button>
+        <button id="hideBtn">Hide model</button>
+        <button id="clearBtn">Clear</button>
+        <button id="printBtn">Print blank form</button>
+      </div>
+
+      <div class="card">
+        <div class="form-head">
+          <div>
+            <label>Date and time</label>
+            <input type="text" id="datetime" placeholder="e.g. 17/09/2026 14:30" />
+          </div>
+          <div>
+            <label>Area of assessment</label>
+            <input type="text" value="Posterior chest" readonly />
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-section="inspection">
+        <p class="section-title">Inspection</p>
+        <p class="hint">Write the 8 posterior findings. One point per line is fine.</p>
+        <textarea id="inspection" placeholder="- ..."></textarea>
+        <div class="model" id="model-inspection"></div>
+        <div class="score" id="score-inspection"></div>
+      </div>
+
+      <div class="card" data-section="palpation">
+        <p class="section-title">Palpation</p>
+        <p class="hint">3 findings.</p>
+        <textarea id="palpation" placeholder="- ..."></textarea>
+        <div class="model" id="model-palpation"></div>
+        <div class="score" id="score-palpation"></div>
+      </div>
+
+      <div class="card" data-section="percussion">
+        <p class="section-title">Percussion</p>
+        <p class="hint">1 finding.</p>
+        <textarea id="percussion" placeholder="- ..."></textarea>
+        <div class="model" id="model-percussion"></div>
+        <div class="score" id="score-percussion"></div>
+      </div>
+
+      <div class="card" data-section="auscultation">
+        <p class="section-title">Auscultation</p>
+        <p class="hint">3 findings.</p>
+        <textarea id="auscultation" placeholder="- ..."></textarea>
+        <div class="model" id="model-auscultation"></div>
+        <div class="score" id="score-auscultation"></div>
+      </div>
+
+      <div class="card">
+        <p class="section-title">Other tests / Remarks</p>
+        <textarea id="remarks" placeholder="Nil." style="min-height:70px"></textarea>
+      </div>
+    </section>
+
+    <section id="view-flash" hidden>
+      <div class="card flash">
+        <p class="prompt" id="flashPrompt"></p>
+        <p class="hint" id="flashHint"></p>
+        <div class="answer" id="flashAnswer"></div>
+        <div class="toolbar">
+          <button class="primary" id="showAnswer">Show answer</button>
+          <button id="nextCard">Next card</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-tips" hidden>
+      <div class="card">
+        <p class="section-title">Posterior vs anterior — what changes</p>
+        <p>The sample form uses almost the same Palpation / Percussion / Auscultation wording for both sides. Inspection is different.</p>
+        <p><strong>Posterior inspection extra / specific:</strong> spinous processes in a straight line; elliptical thorax with ribs sloping ~45° to the spine; scapulae symmetric in each hemithorax.</p>
+        <p><strong>Anterior inspection extra / specific:</strong> normal elliptical chest wall; ribs sloping downward with symmetric interspaces; costal angle within 90°; relaxed facial expression without nasal flaring.</p>
+        <p><strong>Shared inspection:</strong> skin colour consistent with genetic background; nails normal configuration; RR 14/min regular even; relaxed respiration without accessory muscle; no audible breathing sound.</p>
+      </div>
+      <div class="card">
+        <p class="section-title">Keyword checklist (posterior)</p>
+        <p class="hint">If you can hit these keywords, the marker usually accepts the finding.</p>
+        <div class="keys">
+          <span class="chip">spinous processes straight</span>
+          <span class="chip">thorax symmetric elliptical</span>
+          <span class="chip">ribs 45° to spine</span>
+          <span class="chip">scapulae symmetric</span>
+          <span class="chip">skin colour</span>
+          <span class="chip">nails normal</span>
+          <span class="chip">RR 14 regular even</span>
+          <span class="chip">no accessory muscle</span>
+          <span class="chip">no audible sound</span>
+          <span class="chip">expansion symmetric</span>
+          <span class="chip">tactile fremitus equal</span>
+          <span class="chip">skin warm no mass/lesion/tenderness</span>
+          <span class="chip">equal resonance</span>
+          <span class="chip">air entry equal</span>
+          <span class="chip">breath sounds clear</span>
+          <span class="chip">no adventitious sound</span>
+        </div>
+      </div>
+      <div class="card">
+        <p class="section-title">Mini mnemonic</p>
+        <p><strong>I-P-P-A</strong> = Inspect → Palpate → Percuss → Auscultate (never skip order).</p>
+        <p><strong>Posterior inspect:</strong> <em>Spine – Shape 45° – Scapulae – Skin – Nails – 14 – Relaxed – Silent</em></p>
+        <p><strong>Palpate:</strong> <em>Expand – Fremitus – Skin</em></p>
+        <p><strong>Percuss:</strong> <em>Resonance both sides</em></p>
+        <p><strong>Auscultate:</strong> <em>Air in – Clear – No extra sounds</em></p>
+      </div>
+    </section>
+
+    <footer>
+      Wording taken from PDN Health Assessment CSC sample (respiratory system). Practice only — copy the school’s exact phrasing in the real assessment.
+    </footer>
+  </div>
+
+  <script>
+    const MODEL = {
+      inspection: [
+        "Spinous processes appear in a straight line.",
+        "Thorax is symmetric, in an elliptical shape, with downward sloping ribs, about 45 degrees relative to the spine.",
+        "Scapulae are placed symmetrically in each hemithorax.",
+        "Skin colour is consistent with client’s genetic background.",
+        "The nails are of normal configuration.",
+        "Respiratory rate is 14 breaths/min, regular and even respiration.",
+        "Relax respiration without using of accessory muscle.",
+        "No audible breathing sound is noted."
+      ],
+      palpation: [
+        "Chest expansion is symmetric.",
+        "Tactile fremitus is equal bilaterally over the lung fields.",
+        "Skin warm, no superficial mass, lesion or tenderness is noted."
+      ],
+      percussion: [
+        "Bilaterally equal resonance are noted over the lung fields."
+      ],
+      auscultation: [
+        "Air entry bilaterally equal.",
+        "Breath sounds are clear over the lung fields.",
+        "No adventitious sound is noted."
+      ]
+    };
+
+    const KEYS = {
+      inspection: [
+        ["spinous", "straight"],
+        ["thorax", "symmetric", "elliptical"],
+        ["45"],
+        ["scapul"],
+        ["skin", "colour"],
+        ["nail"],
+        ["14"],
+        ["accessory"],
+        ["audible"]
+      ],
+      palpation: [
+        ["expansion", "symmetric"],
+        ["fremitus"],
+        ["warm"],
+        ["tenderness"]
+      ],
+      percussion: [
+        ["resonance"]
+      ],
+      auscultation: [
+        ["air entry"],
+        ["clear"],
+        ["adventitious"]
+      ]
+    };
+
+    function norm(s) {
+      return (s || "").toLowerCase().replace(/[’']/g, "'");
+    }
+
+    function scoreSection(name) {
+      const text = norm(document.getElementById(name).value);
+      const keys = KEYS[name];
+      let hit = 0;
+      keys.forEach(group => {
+        if (group.every(k => text.includes(k))) hit++;
+      });
+      const pct = Math.round((hit / keys.length) * 100);
+      const el = document.getElementById("score-" + name);
+      el.className = "score " + (pct >= 80 ? "ok" : pct >= 50 ? "mid" : "low");
+      el.textContent = "Keyword coverage: " + hit + "/" + keys.length + " (" + pct + "%). Exact school wording is shown above when you reveal the model.";
+      return pct;
+    }
+
+    function setModels(show) {
+      Object.keys(MODEL).forEach(name => {
+        const box = document.getElementById("model-" + name);
+        box.textContent = MODEL[name].map(l => "- " + l).join("\n");
+        box.classList.toggle("show", show);
+      });
+    }
+
+    document.getElementById("checkBtn").onclick = () => {
+      setModels(true);
+      ["inspection","palpation","percussion","auscultation"].forEach(scoreSection);
+    };
+    document.getElementById("revealBtn").onclick = () => setModels(true);
+    document.getElementById("hideBtn").onclick = () => {
+      setModels(false);
+      ["inspection","palpation","percussion","auscultation"].forEach(n => {
+        document.getElementById("score-" + n).textContent = "";
+      });
+    };
+    document.getElementById("clearBtn").onclick = () => {
+      ["datetime","inspection","palpation","percussion","auscultation","remarks"].forEach(id => {
+        const el = document.getElementById(id);
+        if (id !== "datetime") el.value = "";
+      });
+      setModels(false);
+      ["inspection","palpation","percussion","auscultation"].forEach(n => {
+        document.getElementById("score-" + n).textContent = "";
+      });
+    };
+    document.getElementById("printBtn").onclick = () => window.print();
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.onclick = () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        const v = tab.dataset.view;
+        document.getElementById("view-form").hidden = v !== "form";
+        document.getElementById("view-flash").hidden = v !== "flash";
+        document.getElementById("view-tips").hidden = v !== "tips";
+      };
+    });
+
+    const CARDS = [
+      { q: "Inspection — spine & thorax shape (posterior)", hint: "3 lines: spine, thorax+ribs angle, scapulae", a: MODEL.inspection.slice(0,3).join("\n") },
+      { q: "Inspection — skin, nails, breathing pattern", hint: "5 lines from the sample", a: MODEL.inspection.slice(3).join("\n") },
+      { q: "Write ALL 8 posterior inspection findings", hint: "Spine → shape 45° → scapulae → skin → nails → RR14 → no accessory → silent", a: MODEL.inspection.join("\n") },
+      { q: "Palpation — 3 findings", hint: "Expansion, fremitus, skin", a: MODEL.palpation.join("\n") },
+      { q: "Percussion — 1 finding", hint: "Resonance", a: MODEL.percussion.join("\n") },
+      { q: "Auscultation — 3 findings", hint: "Air entry, clear, no adventitious", a: MODEL.auscultation.join("\n") },
+      { q: "What is different on ANTERIOR inspection?", hint: "Think costal angle and face", a: "Anterior adds: elliptical chest wall; ribs sloping downward with symmetric interspaces; costal angle within 90 degrees; relaxed facial expression without nasal flaring.\nAnterior does NOT use: spinous processes / 45° to spine / scapulae lines." }
+    ];
+    let card = 0;
+    function renderCard() {
+      const c = CARDS[card];
+      document.getElementById("flashPrompt").textContent = (card+1) + "/" + CARDS.length + "  ·  " + c.q;
+      document.getElementById("flashHint").textContent = c.hint;
+      const ans = document.getElementById("flashAnswer");
+      ans.textContent = c.a;
+      ans.classList.remove("show");
+    }
+    document.getElementById("showAnswer").onclick = () => document.getElementById("flashAnswer").classList.add("show");
+    document.getElementById("nextCard").onclick = () => { card = (card + 1) % CARDS.length; renderCard(); };
+    renderCard();
+  </script>
+</body>
+</html>
